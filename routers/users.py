@@ -11,7 +11,7 @@ router = APIRouter()
 @router.post("/register")
 async def register(db_session:Annotated[AsyncSession, Depends(get_db)],
                    data: RegisterInput = Body(),
-):
+                   ):
     user = await UserOperation(db_session).create(username=data.username,password=data.password)
     return user
 
@@ -19,9 +19,12 @@ async def register(db_session:Annotated[AsyncSession, Depends(get_db)],
 async def login():
     ...
 
-@router.get("/")
-async def get_user_profile():
-    ...
+@router.get("/{username}")
+async def get_user_profile(db_session:Annotated[AsyncSession, Depends(get_db)],
+                           username: str,
+                           ):
+    user = await UserOperation(db_session).get_user_by_username(username=username)
+    return user
 
 @router.put("/")
 async def user_update_profile():
