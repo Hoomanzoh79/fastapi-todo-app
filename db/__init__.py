@@ -5,5 +5,3 @@ __all__ = [
     "Base",
     "User",
 ]
-
-Base.metadata.create_all(bind=engine)
