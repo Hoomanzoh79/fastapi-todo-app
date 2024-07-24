@@ -11,4 +11,5 @@ class UserOperation:
 
         async with self.db_session as session:
             session.add(user)
+            await session.commit()
         return user
