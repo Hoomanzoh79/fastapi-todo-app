@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
 
 from db.models import User
-from exceptions import UserNotFound
+from exceptions import UserNotFoundException
 
 class UserOperation:
     def __init__(self,db_session: AsyncSession) -> None:
@@ -22,7 +22,7 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFound
+                raise UserNotFoundException
 
         return user_data
 
@@ -32,7 +32,7 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFound
+                raise UserNotFoundException
             await session.execute(update_query)
             await session.commit()
             user_data.username = new_username
@@ -45,7 +45,7 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFound
+                raise UserNotFoundException
             await session.execute(delete_query)
             await session.commit()
         return {"msg": "user has been deleted sucessfully"}
