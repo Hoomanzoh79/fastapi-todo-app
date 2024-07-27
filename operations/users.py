@@ -1,8 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
+from sqlalchemy.exc import IntegrityError
 
 from db.models import User
-from exceptions import UserNotFoundException
+from exceptions import UserNotFoundException,UserAlreadyExistsException
 from utils.secrets import password_manager
 
 class UserOperation:
@@ -12,10 +13,12 @@ class UserOperation:
     async def create(self,username: str,password: str) -> User:
         user_pwd = password_manager.hash(password)
         user = User(password=user_pwd,username=username)
-
-        async with self.db_session as session:
-            session.add(user)
-            await session.commit()
+        try:
+            async with self.db_session as session:
+                session.add(user)
+                await session.commit()
+        except IntegrityError:
+            raise UserAlreadyExistsException
         return user
 
     async def get_user_by_username(self,username: str) -> User:
