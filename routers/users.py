@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
 from schema._input import RegisterInput,UserUpdateInput
+from schema.output import RegisterOutput
 from db.engine  import get_db
 from operations.users import UserOperation
 
@@ -13,7 +14,7 @@ async def register(db_session:Annotated[AsyncSession, Depends(get_db)],
                    data: RegisterInput = Body(),
                    ):
     user = await UserOperation(db_session).create(username=data.username,password=data.password)
-    return user
+    return RegisterOutput(username=user.username,id=user.id)
 
 @router.post("/login")
 async def login():
