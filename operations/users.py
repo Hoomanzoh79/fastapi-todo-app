@@ -1,16 +1,17 @@
-from xml.dom import ValidationErr
 from sqlalchemy.ext.asyncio import AsyncSession
 import sqlalchemy as sa
 
 from db.models import User
 from exceptions import UserNotFoundException
+from utils.secrets import password_manager
 
 class UserOperation:
     def __init__(self,db_session: AsyncSession) -> None:
         self.db_session = db_session
 
     async def create(self,username: str,password: str) -> User:
-        user = User(password=password,username=username)
+        user_pwd = password_manager.hash(password)
+        user = User(password=user_pwd,username=username)
 
         async with self.db_session as session:
             session.add(user)
