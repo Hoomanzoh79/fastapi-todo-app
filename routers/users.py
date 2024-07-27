@@ -2,7 +2,7 @@ from fastapi import APIRouter,Body, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Annotated
 
-from schema._input import RegisterInput,UserUpdateInput
+from schema._input import UserInput,UserUpdateInput
 from schema.output import RegisterOutput
 from db.engine  import get_db
 from operations.users import UserOperation
@@ -11,14 +11,17 @@ router = APIRouter()
 
 @router.post("/register")
 async def register(db_session:Annotated[AsyncSession, Depends(get_db)],
-                   data: RegisterInput = Body(),
+                   data: UserInput = Body(),
                    ):
     user = await UserOperation(db_session).create(username=data.username,password=data.password)
     return RegisterOutput(username=user.username,id=user.id)
 
 @router.post("/login")
-async def login():
-    ...
+async def login(db_session:Annotated[AsyncSession, Depends(get_db)],
+                data: UserInput = Body(),
+                ):
+    token = await UserOperation(db_session).login(username=data.username,password=data.password)
+    return token
 
 @router.get("/{username}")
 async def get_user_profile(db_session:Annotated[AsyncSession, Depends(get_db)],

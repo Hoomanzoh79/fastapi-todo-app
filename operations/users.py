@@ -3,7 +3,7 @@ import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
 
 from db.models import User
-from exceptions import UserNotFoundException,UserAlreadyExistsException
+import exceptions
 from utils.secrets import password_manager
 
 class UserOperation:
@@ -18,7 +18,7 @@ class UserOperation:
                 session.add(user)
                 await session.commit()
         except IntegrityError:
-            raise UserAlreadyExistsException
+            raise exceptions.UserAlreadyExistsException
         return user
 
     async def get_user_by_username(self,username: str) -> User:
@@ -26,7 +26,7 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFoundException
+                raise exceptions.UserNotFoundException
 
         return user_data
 
@@ -36,7 +36,7 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFoundException
+                raise exceptions.UserNotFoundException
             await session.execute(update_query)
             await session.commit()
             user_data.username = new_username
@@ -49,7 +49,19 @@ class UserOperation:
         async with self.db_session as session:
             user_data = await session.scalar(query)
             if user_data is None:
-                raise UserNotFoundException
+                raise exceptions.UserNotFoundException
             await session.execute(delete_query)
             await session.commit()
         return {"msg": "user has been deleted sucessfully"}
+
+    async def login(self,username: str,password: str) -> str:
+        query = sa.select(User).where(User.username == username)
+        async with self.db_session as session:
+            user = await session.scalar(query)
+            if user is None:
+                raise exceptions.InvalidUsernameOrPasswordException
+
+        if not password_manager.verify(password,user.password):
+            raise exceptions.InvalidUsernameOrPasswordException
+
+        return "Yes"
