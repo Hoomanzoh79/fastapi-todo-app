@@ -1,3 +1,4 @@
 fastapi
 sqlalchemy
 aiosqlite
+passlib[bcrypt]
