@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 import sqlalchemy as sa
 from sqlalchemy.exc import IntegrityError
 
@@ -9,61 +9,58 @@ from utils.jwt import JWTHandler
 from schema.jwt import JWTResponsePayload
 
 class UserOperation:
-    def __init__(self,db_session: AsyncSession) -> None:
+    def __init__(self,db_session: Session) -> None:
         self.db_session = db_session
 
-    async def create(self,username: str,password: str) -> User:
+    def create(self,username,password) -> User:
         user_pwd = password_manager.hash(password)
         user = User(password=user_pwd,username=username)
-        try:
-            async with self.db_session as session:
-                session.add(user)
-                await session.commit()
-        except IntegrityError:
-            raise exceptions.UserAlreadyExistsException
+        self.db_session.add(user)
+        self.db_session.commit()
+        self.db_session.refresh(user)
         return user
 
-    async def get_user_by_username(self,username: str) -> User:
-        query = sa.select(User).where(User.username == username)
-        async with self.db_session as session:
-            user_data = await session.scalar(query)
-            if user_data is None:
-                raise exceptions.UserNotFoundException
+    # def get_user_by_username(self,username) -> User:
+    #     query = sa.select(User).where(User.username == username)
+    #     with self.db_session as session:
+    #         user_data = session.scalar(query)
+    #         if user_data is None:
+    #             raise exceptions.UserNotFoundException
 
-        return user_data
+    #     return user_data
 
-    async def update_username(self,old_username: str,new_username: str) -> User:
-        query = sa.select(User).where(User.username == old_username)
-        update_query = sa.update(User).where(User.username == old_username).values(username=new_username)
-        async with self.db_session as session:
-            user_data = await session.scalar(query)
-            if user_data is None:
-                raise exceptions.UserNotFoundException
-            await session.execute(update_query)
-            await session.commit()
-            user_data.username = new_username
+    # def update_username(self,old_username,new_username) -> User:
+    #     query = sa.select(User).where(User.username == old_username)
+    #     update_query = sa.update(User).where(User.username == old_username).values(username=new_username)
+    #     with self.db_session as session:
+    #         user_data = session.scalar(query)
+    #         if user_data is None:
+    #             raise exceptions.UserNotFoundException
+    #         session.execute(update_query)
+    #         session.commit()
+    #     user_data.username = new_username
 
-        return user_data
+    #     return user_data
 
-    async def delete(self,username: str):
-        query = sa.select(User).where(User.username == username)
-        delete_query = sa.delete(User).where(User.username == username)
-        async with self.db_session as session:
-            user_data = await session.scalar(query)
-            if user_data is None:
-                raise exceptions.UserNotFoundException
-            await session.execute(delete_query)
-            await session.commit()
-        return {"msg": "user has been deleted sucessfully"}
+    # def delete(self,username: str):
+    #     query = sa.select(User).where(User.username == username)
+    #     delete_query = sa.delete(User).where(User.username == username)
+    #     with self.db_session as session:
+    #         user_data =  session.scalar(query)
+    #         if user_data is None:
+    #             raise exceptions.UserNotFoundException
+    #          session.execute(delete_query)
+    #          session.commit()
+    #     return {"msg": "user has been deleted sucessfully"}
 
-    async def login(self,username: str,password: str) -> JWTResponsePayload:
-        query = sa.select(User).where(User.username == username)
-        async with self.db_session as session:
-            user = await session.scalar(query)
-            if user is None:
-                raise exceptions.InvalidUsernameOrPasswordException
+    # def login(self,username: str,password: str) -> JWTResponsePayload:
+    #     query = sa.select(User).where(User.username == username)
+    #     with self.db_session as session:
+    #         user =  session.scalar(query)
+    #         if user is None:
+    #             raise exceptions.InvalidUsernameOrPasswordException
 
-        if not password_manager.verify(password,user.password):
-            raise exceptions.InvalidUsernameOrPasswordException
+    #     if not password_manager.verify(password,user.password):
+    #         raise exceptions.InvalidUsernameOrPasswordException
 
-        return JWTHandler.generate(username)
+    #     return JWTHandler.generate(username)

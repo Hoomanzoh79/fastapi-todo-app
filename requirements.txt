@@ -3,3 +3,4 @@ sqlalchemy
 aiosqlite
 passlib[bcrypt]
 pyjwt
+asyncpg
