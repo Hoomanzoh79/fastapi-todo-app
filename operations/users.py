@@ -5,6 +5,8 @@ from sqlalchemy.exc import IntegrityError
 from db.models import User
 import exceptions
 from utils.secrets import password_manager
+from utils.jwt import JWTHandler
+from schema.jwt import JWTResponsePayload
 
 class UserOperation:
     def __init__(self,db_session: AsyncSession) -> None:
@@ -54,7 +56,7 @@ class UserOperation:
             await session.commit()
         return {"msg": "user has been deleted sucessfully"}
 
-    async def login(self,username: str,password: str) -> str:
+    async def login(self,username: str,password: str) -> JWTResponsePayload:
         query = sa.select(User).where(User.username == username)
         async with self.db_session as session:
             user = await session.scalar(query)
@@ -64,4 +66,4 @@ class UserOperation:
         if not password_manager.verify(password,user.password):
             raise exceptions.InvalidUsernameOrPasswordException
 
-        return "Yes"
+        return JWTHandler.generate(username)

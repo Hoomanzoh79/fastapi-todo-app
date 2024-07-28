@@ -13,14 +13,14 @@ router = APIRouter()
 async def register(db_session:Annotated[AsyncSession, Depends(get_db)],
                    data: UserInput = Body(),
                    ):
-    user = await UserOperation(db_session).create(username=data.username,password=data.password)
+    user = await UserOperation(db_session).create(data.username,data.password)
     return RegisterOutput(username=user.username,id=user.id)
 
 @router.post("/login")
 async def login(db_session:Annotated[AsyncSession, Depends(get_db)],
                 data: UserInput = Body(),
                 ):
-    token = await UserOperation(db_session).login(username=data.username,password=data.password)
+    token = await UserOperation(db_session).login(data.username,data.password)
     return token
 
 @router.get("/{username}")
