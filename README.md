@@ -1,3 +1,3 @@
-<h1>
-This is a simple todo app project using fastapi,This repository will recirevefurther updates as I learn more about fastapi framework
-</h1>
+<h2>
+This is a simple todo app project using fastapi,this repository will recireve further updates as I learn more about fastapi framework
+</h2>
