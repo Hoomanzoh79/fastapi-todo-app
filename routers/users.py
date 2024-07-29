@@ -16,7 +16,33 @@ async def register(db_session:db_dependency,
                    data: UserInput = Body(),
                    ):
     user = UserOperation(db_session).create(data.username,data.password)
-    return RegisterOutput(username=user.username,id=user.id) # type: ignore
+    return user
+
+
+@router.get("/{username}")
+async def get_user_profile(db_session:db_dependency,
+                           username: str,
+                           ):
+    user = UserOperation(db_session).get_user_by_username(username=username)
+    return user
+
+@router.put("/")
+async def user_update_profile(db_session:db_dependency,
+                              data: UserUpdateInput = Body(),
+                             ):
+    user = UserOperation(db_session).update_username(data.old_username,
+                                                     data.new_username,
+                                                    )
+    return user
+
+
+@router.delete("/{username}",status_code=204)
+async def user_delete(db_session:db_dependency,
+                      username: str,
+                      ):
+    user = UserOperation(db_session).delete(username)
+    return user
+
 
 # @router.post("/login")
 # async def login(db_session:Annotated[AsyncSession, Depends(get_db)],
@@ -24,27 +50,3 @@ async def register(db_session:db_dependency,
 #                 ):
 #     token = await UserOperation(db_session).login(data.username,data.password)
 #     return token
-
-# @router.get("/{username}")
-# async def get_user_profile(db_session:db_dependency,
-#                            username: str,
-#                            ):
-#     user = await UserOperation(db_session).get_user_by_username(username=username)
-#     return user
-
-# @router.put("/")
-# async def user_update_profile(db_session:Annotated[AsyncSession, Depends(get_db)],
-#                               data: UserUpdateInput = Body(),
-#                              ):
-#     user = await UserOperation(db_session).update_username(data.old_username,
-#                                                            data.new_username,
-#                                                            )
-#     return user
-
-
-# @router.delete("/{username}")
-# async def user_delete(db_session:Annotated[AsyncSession, Depends(get_db)],
-#                       username: str,
-#                       ):
-#     user = await UserOperation(db_session).delete(username)
-#     return user
