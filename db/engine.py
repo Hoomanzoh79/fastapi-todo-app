@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 
 
 # SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./blog.db"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:Alishab13@localhost:5432/fastapi"
+SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://postgres:Alishab13@localhost:5432/fastapi"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(
