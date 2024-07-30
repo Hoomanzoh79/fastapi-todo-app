@@ -67,7 +67,7 @@ class UserOperation:
             user =  session.scalar(query)
             if user is None:
                 raise exceptions.InvalidUsernameOrPasswordException
-        
+
         if not password_manager.verify(password,user.password): # type: ignore
             raise exceptions.InvalidUsernameOrPasswordException
 
