@@ -4,9 +4,6 @@ from sqlalchemy.exc import IntegrityError
 
 from db.models import User,Task
 import exceptions
-from utils.secrets import password_manager
-from utils.jwt import JWTHandler
-from schema.jwt import JWTResponsePayload
 from schema.output import TaskOutput
 
 class TaskOperation:
@@ -20,9 +17,9 @@ class TaskOperation:
             try:
                 session.add(task)
                 session.commit()
-                session.refresh(task)
+
             except IntegrityError:
-                raise Exception("task already exists")
+                raise exceptions.InvalidAuthorException
 
         return TaskOutput(id=task.id,name=task.name, # type: ignore
                           is_done=task.is_done, # type: ignore
