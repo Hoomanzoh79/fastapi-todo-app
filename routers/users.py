@@ -44,9 +44,9 @@ async def user_delete(db_session:db_dependency,
     return user
 
 
-# @router.post("/login")
-# async def login(db_session:Annotated[AsyncSession, Depends(get_db)],
-#                 data: UserInput = Body(),
-#                 ):
-#     token = await UserOperation(db_session).login(data.username,data.password)
-#     return token
+@router.post("/login")
+async def login(db_session:db_dependency,
+                data: UserInput = Body(),
+                ):
+    token = UserOperation(db_session).login(data.username,data.password)
+    return token

@@ -61,14 +61,14 @@ class UserOperation:
             session.commit()
         return {"msg": "user has been deleted sucessfully"}
 
-    # def login(self,username: str,password: str) -> JWTResponsePayload:
-    #     query = sa.select(User).where(User.username == username)
-    #     with self.db_session as session:
-    #         user =  session.scalar(query)
-    #         if user is None:
-    #             raise exceptions.InvalidUsernameOrPasswordException
+    def login(self,username: str,password: str) -> JWTResponsePayload:
+        query = sa.select(User).where(User.username == username)
+        with self.db_session as session:
+            user =  session.scalar(query)
+            if user is None:
+                raise exceptions.InvalidUsernameOrPasswordException
+        
+        if not password_manager.verify(password,user.password): # type: ignore
+            raise exceptions.InvalidUsernameOrPasswordException
 
-    #     if not password_manager.verify(password,user.password):
-    #         raise exceptions.InvalidUsernameOrPasswordException
-
-    #     return JWTHandler.generate(username)
+        return JWTHandler.generate(username)
