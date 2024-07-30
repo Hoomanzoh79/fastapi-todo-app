@@ -15,3 +15,8 @@ class InvalidUsernameOrPasswordException(HTTPException):
     def __init__(self):
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.detail = "username or password is invalid!"
+
+class InvalidAuthorException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_404_NOT_FOUND
+        self.detail = "No user found with this id"
