@@ -5,3 +5,4 @@ passlib[bcrypt]
 pyjwt
 asyncpg
 alembic
+jinja2
