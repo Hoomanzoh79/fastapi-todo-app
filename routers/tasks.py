@@ -12,7 +12,7 @@ router = APIRouter()
 
 db_dependency = Annotated[Session,Depends(get_db)]
 
-@router.post("/create-task")
+@router.post("/create")
 async def create_task(db_session:db_dependency,
                       data: TaskInput = Body(),
                       ):
@@ -21,14 +21,14 @@ async def create_task(db_session:db_dependency,
                                             )
     return task
 
-@router.get("/{username}/tasks")
+@router.get("/{username}")
 async def get_user_tasks(db_session:db_dependency,
                          username:str,
                          ):
     user_tasks = TaskOperation(db_session).get_tasks_by_username(username)
     return user_tasks
 
-@router.put("task-update")
+@router.put("/update")
 async def update_task(db_session:db_dependency,
                       data:TaskUpdateInput=Body(),
                      ):
