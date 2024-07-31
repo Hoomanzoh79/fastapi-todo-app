@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+from starlette.middleware.cors import CORSMiddleware
 
 from routers.users import router as user_router
 from routers.tasks import router as task_router
@@ -10,9 +9,15 @@ from db import models
 
 app = FastAPI()
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    # Update with specific origins in production
+    allow_origins=["localhost"],
+    allow_methods=["GET", "POST","PUT","DELETE",],
+)
 
-# templates = Jinja2Templates(directory="templates")
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 models.Base.metadata.create_all(bind=engine)
 
