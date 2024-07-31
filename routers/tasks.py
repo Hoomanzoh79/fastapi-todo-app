@@ -20,3 +20,10 @@ async def create_task(db_session:db_dependency,
                                             user_id=data.user_id
                                             )
     return task
+
+@router.get("/{username}/tasks")
+async def get_user_tasks(db_session:db_dependency,
+                         username:str,
+                         ):
+    user_tasks = TaskOperation(db_session).get_tasks_by_username(username)
+    return user_tasks
