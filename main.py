@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
 
 from routers.users import router as user_router
@@ -17,7 +18,7 @@ app.add_middleware(
     allow_methods=["GET", "POST","PUT","DELETE",],
 )
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 models.Base.metadata.create_all(bind=engine)
 
