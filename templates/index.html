@@ -3,60 +3,83 @@
 
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width,
+								initial-scale=1.0">
 	<title>To Do List</title>
-	<!-- Bootstrap CSS -->
+	<link href="{{ url_for('static', path='/css/style.css') }}" rel="stylesheet">
+	<!-- Include Tailwind CSS -->
 	<link href=
-"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+"https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
 		rel="stylesheet">
+	<style>
+		.completed {
+			text-decoration: line-through;
+		}
+	</style>
 </head>
 
-<body>
-	<div class="container mt-5">
-		<h1 class="text-center mb-4">To Do List</h1>
-		<div class="row justify-content-center">
-			<div class="col-md-8">
-				<div class="card">
-					<div class="card-body">
-						<form id="todo-form">
-							<div class="input-group mb-3">
-								<input type="text" class="form-control"
-									id="todo-input"
-									placeholder="Add new task"
-									required>
-								<button class="btn btn-primary" type="submit">
-									Add
-								</button>
-							</div>
-						</form>
-						<ul class="list-group" id="todo-list">
-							<!-- Tasks will be added here dynamically -->
-						</ul>
+<body class="bg-gray-100">
+
+	<div class="container mx-auto my-10">
+		<h1 class="text-center text-3xl font-semibold mb-4">
+			To Do List
+		</h1>
+		<div class="md:w-1/2 mx-auto">
+			<div class="bg-white shadow-md rounded-lg p-6">
+				<form id="todo-form">
+					<div class="flex mb-4">
+						<input type="text"
+							class="w-full px-4 py-2 mr-2 rounded-lg
+							border-gray-300 focus:outline-none
+							focus:border-blue-500" id="todo-input"
+							placeholder="Add new task" required>
+						<button class="bg-blue-500 hover:bg-blue-700 
+							text-white font-bold py-2 px-4 rounded">
+							Add
+						</button>
 					</div>
-				</div>
+				</form>
+				<ul id="todo-list">
+					<!-- Tasks will be added here dynamically -->
+				</ul>
 			</div>
 		</div>
 	</div>
 
-	<!-- Bootstrap JS Bundle (popper.js included) -->
-	<script src=
-"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js">
-	</script>
 	<script>
 		// Function to add a new task
 		function addTask(task) {
 			const todoList = document.getElementById("todo-list");
 			const li = document.createElement("li");
-			li.className = "list-group-item d-flex justify-content-between align-items-center";
+			li.className = 
+			"border-b border-gray-200 flex items-center justify-between py-4";
 			li.innerHTML = `
-		<span class="task-text">${task}</span>
-		<input type="text" class="form-control edit-input" style="display: none;" value="${task}">
-		<div class="btn-group">
-		<button class="btn btn-danger btn-sm delete-btn">✕</button>
-		<button class="btn btn-primary btn-sm edit-btn">✎</button>
-		</div>
-	`;
+				<label class="flex items-center">
+					<input type="checkbox" class="mr-2">
+					<span>${task}</span>
+				</label>
+				<div>
+					<button class="button">
+  					<svg viewBox="0 0 448 512" class="svgIcon">
+						<path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+						</svg>
+					<button class="shadow__btn">
+						Edit
+					</button>
+				</div>
+			`;
 			todoList.appendChild(li);
+
+			// Add event listener to the checkbox
+			const checkbox = li.querySelector('input[type="checkbox"]');
+			checkbox.addEventListener('change', function () {
+				const taskText = this.nextElementSibling;
+				if (this.checked) {
+					taskText.classList.add('completed');
+				} else {
+					taskText.classList.remove('completed');
+				}
+			});
 		}
 
 		// Event listener for form submission
@@ -72,7 +95,8 @@
 			});
 
 		// Event listener for delete button click
-		document.getElementById("todo-list").addEventListener("click",
+		document.getElementById("todo-list")
+		.addEventListener("click",
 			function (event) {
 				if (event.target.classList.contains("delete-btn")) {
 					event.target.parentElement.parentElement.remove();
@@ -80,25 +104,19 @@
 			});
 
 		// Event listener for edit button click
-		document.getElementById("todo-list").addEventListener("click", function (event) {
-			if (event.target.classList.contains("edit-btn")) {
-				const taskText = event.target.parentElement
-					.parentElement.querySelector(".task-text");
-				const editInput = event.target.parentElement
-					.parentElement.querySelector(".edit-input");
-				if (taskText.style.display !== "none") {
-					taskText.style.display = "none";
-					editInput.style.display = "block";
-					editInput.focus();
-					event.target.innerHTML = "";
-				} else {
-					taskText.textContent = editInput.value;
-					taskText.style.display = "inline";
-					editInput.style.display = "none";
-					event.target.innerHTML = "✎";
+		document.getElementById("todo-list")
+		.addEventListener("click",
+			function (event) {
+				if (event.target.classList.contains("edit-btn")) {
+					const taskText = event.target.
+						parentElement.parentElement.querySelector("span");
+					const newText = 
+						prompt("Enter new task", taskText.textContent);
+					if (newText !== null) {
+						taskText.textContent = newText.trim();
+					}
 				}
-			}
-		});
+			});
 
 		// Add default tasks
 		const defaultTasks = ["HTML", "CSS", "JS", "Bootstrap"];
