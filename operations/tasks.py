@@ -13,6 +13,9 @@ class TaskOperation:
     def create(self,name,user_id):
         task = Task(name=name,is_done=False,user_id=user_id)
         user = sa.select(User).where(User.id==user_id)
+        
+        if len(name) > 100:
+            raise exceptions.TaskNameLengthException
 
         with self.db_session as session:
             user_data = session.scalar(user)
