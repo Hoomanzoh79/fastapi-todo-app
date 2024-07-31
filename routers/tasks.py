@@ -3,7 +3,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 
 from operations.tasks import TaskOperation
-from schema._input import TaskInput
+from schema._input import TaskInput,TaskUpdateInput
 from schema.output import RegisterOutput
 from db.engine  import get_db
 from operations.tasks import TaskOperation
@@ -27,3 +27,10 @@ async def get_user_tasks(db_session:db_dependency,
                          ):
     user_tasks = TaskOperation(db_session).get_tasks_by_username(username)
     return user_tasks
+
+@router.put("task-update")
+async def update_task(db_session:db_dependency,
+                      data:TaskUpdateInput=Body(),
+                     ):
+    task = TaskOperation(db_session).update(task_id=data.task_id,new_name=data.new_name,new_status=data.is_done)
+    return task
