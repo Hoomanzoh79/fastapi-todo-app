@@ -41,5 +41,7 @@ class TaskOperation:
                 raise exceptions.UserNotFoundException
             tasks_query = sa.select(Task).where(Task.user_id==user_data.id)
             user_tasks  = list(session.scalars(tasks_query))
-
+            
+        if len(user_tasks) == 0:
+            return "This user has no tasks yet"
         return user_tasks
