@@ -10,3 +10,4 @@ class TaskOutput(BaseModel):
     name: str
     is_done: bool
     user_id:  int
+    user: str
