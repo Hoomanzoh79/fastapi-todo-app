@@ -13,7 +13,7 @@ class TaskOperation:
     def create(self,name,user_id):
         task = Task(name=name,is_done=False,user_id=user_id)
         user = sa.select(User).where(User.id==user_id)
-        
+
         if len(name) > 100:
             raise exceptions.TaskNameLengthException
 
@@ -31,3 +31,15 @@ class TaskOperation:
                           user_id=task.user_id, # type: ignore
                           user=user_data.username # type: ignore
                           )
+
+    def get_tasks_by_username(self,username:str):
+        user = sa.select(User).where(User.username==username)
+
+        with self.db_session as session:
+            user_data = session.scalar(user)
+            if user_data is None:
+                raise exceptions.UserNotFoundException
+            tasks_query = sa.select(Task).where(Task.user_id==user_data.id)
+            user_tasks  = list(session.scalars(tasks_query))
+
+        return user_tasks
