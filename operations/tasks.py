@@ -41,7 +41,20 @@ class TaskOperation:
                 raise exceptions.UserNotFoundException
             tasks_query = sa.select(Task).where(Task.user_id==user_data.id)
             user_tasks  = list(session.scalars(tasks_query))
-            
+
         if len(user_tasks) == 0:
             return "This user has no tasks yet"
         return user_tasks
+
+    def update(self,task_id,new_name,new_status):
+        task = sa.select(Task).where(Task.id==task_id)
+        update_query = sa.update(Task).where(Task.id == task_id).values(name=new_name,is_done=new_status)
+        with self.db_session as session:
+            task_data = session.scalar(task)
+            if task_data is None:
+                raise exceptions.TaskNotFoundException
+            session.execute(update_query)
+            session.commit()
+        task_data.name,task_data.is_done = new_name,new_status
+
+        return task_data
