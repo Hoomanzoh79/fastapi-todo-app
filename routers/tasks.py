@@ -16,7 +16,7 @@ db_dependency = Annotated[Session,Depends(get_db)]
 async def create_task(db_session:db_dependency,
                       data: TaskInput = Body(),
                       ):
-    task = TaskOperation(db_session).create(name=data.name,is_done=data.is_done,
+    task = TaskOperation(db_session).create(name=data.name,
                                             user_id=data.user_id
                                             )
     return task

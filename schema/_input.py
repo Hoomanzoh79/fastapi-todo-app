@@ -11,5 +11,4 @@ class UserUpdateInput(BaseModel):
 
 class TaskInput(BaseModel):
     name : str
-    is_done : bool
     user_id : int
