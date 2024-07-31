@@ -25,3 +25,8 @@ class TaskNameLengthException(HTTPException):
     def __init__(self):
         self.status_code = status.HTTP_400_BAD_REQUEST
         self.detail = "task name is too long,it shouldn't be longer than 100 charecters"
+
+class TaskNotFoundException(HTTPException):
+    def __init__(self):
+        self.status_code = status.HTTP_404_NOT_FOUND
+        self.detail = "No task was found with the given id!"
