@@ -46,14 +46,18 @@ class TaskOperation:
             return "This user has no tasks yet"
         return user_tasks
 
-    def get_task_by_id(self,id:int):
-        task = sa.select(Task).where(Task.id==id)
+    def get_task_by_id(self,task_id:int):
+        task = sa.select(Task).where(Task.id==task_id)
 
         with self.db_session as session:
             task_data = session.scalar(task)
             if task_data is None:
                 raise exceptions.TaskNotFoundException
-        return TaskOutput(task_data.id,task_data.name,task_data.is_done,task_data.user) # type: ignore
+
+        return TaskOutput(id=task_data.id,name=task_data.name,
+                          is_done=task_data.is_done,user_id=task_data.user_id,
+                          user=task_data.user # type: ignore
+                          ) # type: ignore
 
     def update(self,task_id,new_name,new_status):
         task = sa.select(Task).where(Task.id==task_id)

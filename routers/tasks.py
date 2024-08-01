@@ -21,6 +21,13 @@ async def create_task(db_session:db_dependency,
                                             )
     return task
 
+@router.get("/{task_id}")
+async def get_task_detail(db_session:db_dependency,
+                          task_id:int,
+                          ):
+    task = TaskOperation(db_session).get_task_by_id(task_id)
+    return task
+
 @router.get("/{username}")
 async def get_user_tasks(db_session:db_dependency,
                          username:str,
@@ -28,12 +35,6 @@ async def get_user_tasks(db_session:db_dependency,
     user_tasks = TaskOperation(db_session).get_tasks_by_username(username)
     return user_tasks
 
-@router.get("/{id}")
-async def get_task_detail(db_session:db_dependency,
-                          id:int,
-                          ):
-    task = TaskOperation(db_session).get_task_by_id(id)
-    return task
 
 @router.put("/update")
 async def update_task(db_session:db_dependency,
