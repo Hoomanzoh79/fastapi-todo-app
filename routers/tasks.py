@@ -28,9 +28,23 @@ async def get_user_tasks(db_session:db_dependency,
     user_tasks = TaskOperation(db_session).get_tasks_by_username(username)
     return user_tasks
 
+@router.get("/{id}")
+async def get_task_detail(db_session:db_dependency,
+                          id:int,
+                          ):
+    task = TaskOperation(db_session).get_task_by_id(id)
+    return task
+
 @router.put("/update")
 async def update_task(db_session:db_dependency,
                       data:TaskUpdateInput=Body(),
                      ):
     task = TaskOperation(db_session).update(task_id=data.task_id,new_name=data.new_name,new_status=data.is_done)
+    return task
+
+@router.delete("/{task_id}/delete")
+async def delete_task(db_session:db_dependency,
+                      task_id:int
+                      ):
+    task = TaskOperation(db_session).delete(task_id)
     return task

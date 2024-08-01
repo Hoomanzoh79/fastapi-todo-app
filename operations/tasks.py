@@ -46,6 +46,15 @@ class TaskOperation:
             return "This user has no tasks yet"
         return user_tasks
 
+    def get_task_by_id(self,id:int):
+        task = sa.select(Task).where(Task.id==id)
+
+        with self.db_session as session:
+            task_data = session.scalar(task)
+            if task_data is None:
+                raise exceptions.TaskNotFoundException
+        return TaskOutput(task_data.id,task_data.name,task_data.is_done,task_data.user) # type: ignore
+
     def update(self,task_id,new_name,new_status):
         task = sa.select(Task).where(Task.id==task_id)
         update_query = sa.update(Task).where(Task.id == task_id).values(name=new_name,is_done=new_status)
@@ -58,3 +67,14 @@ class TaskOperation:
         task_data.name,task_data.is_done = new_name,new_status
 
         return task_data
+
+    def delete(self,task_id):
+        query = sa.select(Task).where(Task.id == task_id)
+        delete_query = sa.delete(Task).where(Task.id == task_id)
+        with self.db_session as session:
+            task_data =  session.scalar(query)
+            if task_data is None:
+                raise exceptions.TaskNotFoundException
+            session.execute(delete_query)
+            session.commit()
+        return {"msg": "task has been deleted sucessfully"}
