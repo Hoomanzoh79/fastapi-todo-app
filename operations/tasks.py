@@ -53,10 +53,11 @@ class TaskOperation:
             task_data = session.scalar(task)
             if task_data is None:
                 raise exceptions.TaskNotFoundException
+            user = task_data.user
 
         return TaskOutput(id=task_data.id,name=task_data.name,
                           is_done=task_data.is_done,user_id=task_data.user_id,
-                          user=task_data.user # type: ignore
+                          user=user.username # type: ignore
                           ) # type: ignore
 
     def update(self,task_id,new_name,new_status):
