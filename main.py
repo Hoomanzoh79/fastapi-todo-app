@@ -1,6 +1,8 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Depends
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
+from typing import Annotated
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 from routers.users import router as user_router
 from routers.tasks import router as task_router
@@ -9,6 +11,12 @@ from db.engine import engine
 from db import models
 
 app = FastAPI()
+
+security = HTTPBasic()
+
+@app.get("/users/me")
+def read_current_user(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
+    return {"username": credentials.username, "password": credentials.password}
 
 # Configure CORS
 app.add_middleware(
