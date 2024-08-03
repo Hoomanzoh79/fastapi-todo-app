@@ -5,7 +5,7 @@ fastapi todo app
 <space>
 	
 <h3 align="center">
- This is a simple todo app project using fastapi for the backend and htmx for the frontend,this repository will recireve further updates as I learn more about fastapi framework
+ This is a simple todo app project using fastapi for the backend and htmx for the frontend,this repository will recieve further updates as I learn more about the fastapi framework
 </h3>
 
 <space>
