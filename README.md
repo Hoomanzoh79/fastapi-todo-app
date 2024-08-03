@@ -19,7 +19,8 @@ Languages and tools <img src="https://raw.githubusercontent.com/Tarikul-Islam-An
 <div align="center">
 	<img src="https://skillicons.dev/icons?i=python"/>
 	<img src="https://skillicons.dev/icons?i=fastapi"/>
-  <img src="https://skillicons.dev/icons?i=postgresql"/>
+	<img src="https://skillicons.dev/icons?i=postgresql"/>
+	<img src="https://skillicons.dev/icons?i=htmx"/>
 </div>
 
 
