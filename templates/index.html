@@ -31,27 +31,53 @@
 		</h1> -->
 		<div class="md:w-1/2 mx-auto">
 			<div class="bg-white shadow-md rounded-lg p-6">
-				<form id="todo-form">
+				<form hx-post="/index/create" hx-target="#tasks-list" hx-swap="beforeend" hx-include="#task-input" hx-indicator="#loader">
+					<style>
+						.htmx-indicator {
+							display: none
+						}
+			
+						.htmx-indicator.htmx-request {
+							display: inline;
+						}
+			
+						.htmx-indicator.htmx-request~span {
+							display: none;
+						}
+					</style>
 					<div class="flex mb-4">
 						<input type="text"
 							class="w-full px-4 py-2 mr-2 rounded-lg
 							border-gray-300 focus:outline-none
-							focus:border-blue-500" id="todo-input"
-							placeholder="Add new task" required>
-							<button class="add-button">
-								Add Task
+							focus:border-blue-500" id="task-input"
+							placeholder="Add new task" name="task_name" required>
+							<button class="add-button" type="submit">
+								<svg id="loader" class="htmx-indicator ml-2 animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg"
+								fill="none" viewBox="0 0 24 24">
+								<!-- loader truncated for brevity -->
+							</svg>
+							<span>Add Task</span>
 							</button>
 					</div>
 				</form>
 				<ul id="tasks-list">
 					{% for task in all_tasks %}
-					<li>{{ task.name }}</li>
-					<div class="button-container">
+					<div class="card">
+					  <div class="message-text-container">
+						<p class="message-text">{{task.name}}</p>
+						<p class="sub-text">Author: {{task.user_id}}</p>
+						<p class="message-text">{{task.is_done}}</p>
+					</div>
+				</div>
+					<button hx-put="/tasks/{{task.id}}/update" hx-indicator="#loader" hx-target="#tasks-list" hx-swap="beforeend">
+						<span class="button-text">is it done? click me</span>
+					</button>
+						<div class="button-container" style="justify-content: right;">
 						<button class="button" hx-delete="/tasks/{{task.id}}/delete">
 							  <svg viewBox="0 0 448 512" class="svgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
 						</button>
 						<span>&ensp;</span>
-						<button class="btn">Edit</button>
+						<!-- <button class="btn">Edit</button> -->
 					</div>
 					{% endfor %}
 				</ul>
