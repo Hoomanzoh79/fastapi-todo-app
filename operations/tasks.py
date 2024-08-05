@@ -46,30 +46,30 @@ class TaskOperation:
             return "This user has no tasks yet"
         return user_tasks
 
-    def get_task_by_id(self,task_id:int):
+    # def get_task_by_id(self,task_id:int):
+    #     task = sa.select(Task).where(Task.id==task_id)
+
+    #     with self.db_session as session:
+    #         task_data = session.scalar(task)
+    #         if task_data is None:
+    #             raise exceptions.TaskNotFoundException
+    #         user = task_data.user
+
+    #     return TaskOutput(id=task_data.id,name=task_data.name,
+    #                       is_done=task_data.is_done,user_id=task_data.user_id,
+    #                       user=user.username # type: ignore
+    #                       ) # type: ignore
+
+    def update(self,task_id):
         task = sa.select(Task).where(Task.id==task_id)
-
-        with self.db_session as session:
-            task_data = session.scalar(task)
-            if task_data is None:
-                raise exceptions.TaskNotFoundException
-            user = task_data.user
-
-        return TaskOutput(id=task_data.id,name=task_data.name,
-                          is_done=task_data.is_done,user_id=task_data.user_id,
-                          user=user.username # type: ignore
-                          ) # type: ignore
-
-    def update(self,task_id,new_name,new_status):
-        task = sa.select(Task).where(Task.id==task_id)
-        update_query = sa.update(Task).where(Task.id == task_id).values(name=new_name,is_done=new_status)
+        update_query = sa.update(Task).where(Task.id == task_id).values(is_done=True)
         with self.db_session as session:
             task_data = session.scalar(task)
             if task_data is None:
                 raise exceptions.TaskNotFoundException
             session.execute(update_query)
             session.commit()
-        task_data.name,task_data.is_done = new_name,new_status
+        task_data.is_done = True
 
         return task_data
 
@@ -82,4 +82,4 @@ class TaskOperation:
                 raise exceptions.TaskNotFoundException
             session.execute(delete_query)
             session.commit()
-        return {"msg": "task has been deleted sucessfully"}
+        # return {"msg": "task has been deleted sucessfully"}
