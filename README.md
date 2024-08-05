@@ -5,7 +5,7 @@ fastapi todo app
 <space>
 	
 <h3 align="center">
- This is a simple todo app project using fastapi,this repository will recireve further updates as I learn more about fastapi framework
+ This is a simple todo app project using fastapi for the backend and htmx for the frontend,this repository will recieve further updates as I learn more about the fastapi framework
 </h3>
 
 <space>
@@ -19,7 +19,8 @@ Languages and tools <img src="https://raw.githubusercontent.com/Tarikul-Islam-An
 <div align="center">
 	<img src="https://skillicons.dev/icons?i=python"/>
 	<img src="https://skillicons.dev/icons?i=fastapi"/>
-  <img src="https://skillicons.dev/icons?i=postgresql"/>
+	<img src="https://skillicons.dev/icons?i=postgresql"/>
+	<img src="https://skillicons.dev/icons?i=htmx"/>
 </div>
 
 
