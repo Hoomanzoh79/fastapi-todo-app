@@ -1,14 +1,13 @@
 from sqlalchemy import Column,Integer,String,ForeignKey,Boolean
 from sqlalchemy.orm import relationship
 from typing import List
-from typing import Optional
 from sqlalchemy import ForeignKey
 from sqlalchemy import String
-from sqlalchemy.orm import DeclarativeBase
+
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-from uuid import UUID, uuid4
+
 
 from .engine import Base
 
