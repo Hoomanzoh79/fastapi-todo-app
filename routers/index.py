@@ -4,7 +4,6 @@ from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
-from fastapi import status
 
 from db.engine import get_db
 from db.models import Task
