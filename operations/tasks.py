@@ -62,14 +62,17 @@ class TaskOperation:
 
     def update(self,task_id):
         task = sa.select(Task).where(Task.id==task_id)
-        update_query = sa.update(Task).where(Task.id == task_id).values(is_done=True)
+        update_query_task_done = sa.update(Task).where(Task.id == task_id).values(is_done=True)
+        update_query_task_undo = sa.update(Task).where(Task.id == task_id).values(is_done=False)
         with self.db_session as session:
             task_data = session.scalar(task)
             if task_data is None:
                 raise exceptions.TaskNotFoundException
-            session.execute(update_query)
+            if task_data.is_done == False:
+                session.execute(update_query_task_done)
+            else:
+                session.execute(update_query_task_undo)
             session.commit()
-        task_data.is_done = True
 
         return task_data
 
