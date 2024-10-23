@@ -1,5 +1,5 @@
-from typing import Annotated
-from fastapi import Depends, Request,APIRouter,Form
+from typing import Annotated,Optional
+from fastapi import Depends, Request,APIRouter,Form,Header
 from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sqlalchemy as sa
@@ -28,13 +28,19 @@ templates = Jinja2Templates(directory="templates")
 
 
 @router.get("/", response_class=HTMLResponse)
-async def index(db_session:db_dependency,request: Request):
+async def index(db_session:db_dependency,request: Request,hx_request:Optional[str] = Header(None)):
     all_tasks = TemplateOperation(db_session).get_all_tasks()
-    return templates.TemplateResponse("index.html", {"request": request, "all_tasks": all_tasks})
+    context = {"request": request, "all_tasks": all_tasks}
+    if hx_request:
+        return templates.TemplateResponse("task-list.html",context)
+    return templates.TemplateResponse("index.html",context)
 
 
 @router.post("/create")
-async def add_task(db_session:db_dependency,request: Request, task_name: str = Form(...)):
+async def add_task(db_session:db_dependency,request: Request, task_name: str = Form(...),hx_request:Optional[str] = Header(None)):
     task = TaskOperation(db_session).create(name=task_name,user_id=12) # will get the user from request.user later
-    redirect_url = request.url_for('index')
-    return RedirectResponse(redirect_url)
+    all_tasks = TemplateOperation(db_session).get_all_tasks()
+    context = {"request": request, "all_tasks": all_tasks}
+    if hx_request:
+        return templates.TemplateResponse("task-list.html",context)
+    return templates.TemplateResponse("index.html")
